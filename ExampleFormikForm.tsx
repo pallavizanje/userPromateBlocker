@@ -7,17 +7,14 @@ import { useEffect, useState } from "react";
 // This component reads Formik's dirty state and applies hooks
 const FormNavigationBlocker = () => {
   const formik = useFormikContext();
-  const [isDirty, setIsDirty] = useState(formik.dirty);
-
-  useEffect(() => {
-    setIsDirty(formik.dirty);
-  }, [formik.dirty]);
+  const isDirty = formik.dirty;
 
   usePrompt("You have unsaved changes. Do you really want to leave?", isDirty);
   useBeforeUnload(isDirty);
 
   return null;
 };
+
 
 const ExampleFormikForm = () => {
   return (
