@@ -1,57 +1,55 @@
 import React, { createContext, useContext, useState } from "react";
 
-type PromptContextType = {
-  show: (message: string, onConfirm: () => void, onCancel: () => void) => void;
-};
+type Blocker = () => void;
+
+interface PromptContextType {
+  showPrompt: (message: string, proceed: Blocker, cancel: Blocker) => void;
+}
 
 const PromptContext = createContext<PromptContextType | null>(null);
 
 export const usePromptContext = () => {
-  const ctx = useContext(PromptContext);
-  if (!ctx) throw new Error("usePromptContext must be used within PromptProvider");
-  return ctx;
+  const context = useContext(PromptContext);
+  if (!context) throw new Error("usePromptContext must be inside PromptProvider");
+  return context;
 };
 
 export const PromptProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [visible, setVisible] = useState(false);
+  const [show, setShow] = useState(false);
   const [message, setMessage] = useState("");
-  const [onConfirm, setOnConfirm] = useState(() => () => {});
-  const [onCancel, setOnCancel] = useState(() => () => {});
+  const [onProceed, setOnProceed] = useState<() => void>(() => {});
+  const [onCancel, setOnCancel] = useState<() => void>(() => {});
 
-  const show = (
-    msg: string,
-    confirmCallback: () => void,
-    cancelCallback: () => void
-  ) => {
+  const showPrompt = (msg: string, proceed: Blocker, cancel: Blocker) => {
     setMessage(msg);
-    setOnConfirm(() => confirmCallback);
-    setOnCancel(() => cancelCallback);
-    setVisible(true);
+    setOnProceed(() => proceed);
+    setOnCancel(() => cancel);
+    setShow(true);
   };
 
-  const confirm = () => {
-    onConfirm();
-    setVisible(false);
+  const handleConfirm = () => {
+    onProceed();
+    setShow(false);
   };
 
-  const cancel = () => {
+  const handleCancel = () => {
     onCancel();
-    setVisible(false);
+    setShow(false);
   };
 
   return (
-    <PromptContext.Provider value={{ show }}>
+    <PromptContext.Provider value={{ showPrompt }}>
       {children}
-      {visible && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-            <p className="mb-4 text-gray-800">{message}</p>
-            <div className="flex justify-end gap-2">
-              <button onClick={cancel} className="px-4 py-2 text-sm text-gray-700 border rounded">
-                Cancel
-              </button>
-              <button onClick={confirm} className="px-4 py-2 text-sm text-white bg-blue-600 rounded">
+      {show && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-xl shadow-lg text-center">
+            <p className="mb-4 text-lg font-semibold">{message}</p>
+            <div className="flex justify-center gap-4">
+              <button onClick={handleConfirm} className="bg-green-500 text-white px-4 py-2 rounded-xl">
                 Leave
+              </button>
+              <button onClick={handleCancel} className="bg-gray-500 text-white px-4 py-2 rounded-xl">
+                Stay
               </button>
             </div>
           </div>
