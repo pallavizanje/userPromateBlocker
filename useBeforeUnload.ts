@@ -1,3 +1,4 @@
+// hooks/useBeforeUnload.ts
 import { useEffect } from "react";
 
 export const useBeforeUnload = (when: boolean, message = "You have unsaved changes.") => {
