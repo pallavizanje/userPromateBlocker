@@ -5,11 +5,13 @@ export const useBeforeUnload = (when: boolean, message = "Are you sure you want 
     const handler = (e: BeforeUnloadEvent) => {
       if (when) {
         e.preventDefault();
-        e.returnValue = message;
+        e.returnValue = message; // Required for modern browsers
       }
     };
 
-    window.addEventListener("beforeunload", handler);
-    return () => window.removeEventListener("beforeunload", handler);
+    if (when) {
+      window.addEventListener("beforeunload", handler);
+      return () => window.removeEventListener("beforeunload", handler);
+    }
   }, [when, message]);
 };
