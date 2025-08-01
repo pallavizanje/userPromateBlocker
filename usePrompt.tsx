@@ -1,18 +1,18 @@
+import { useBlocker } from "react-router-dom";
 import { useEffect } from "react";
-import { unstable_useBlocker as useBlocker } from "react-router-dom";
-import { usePromptContext } from "./PromptProvider";
+import { usePromptContext } from "./PromptContext";
 
 export const usePrompt = (message: string, when: boolean) => {
   const blocker = useBlocker(when);
-  const prompt = usePromptContext();
+  const { showPrompt } = usePromptContext();
 
   useEffect(() => {
     if (blocker.state === "blocked") {
-      prompt.show(
+      showPrompt(
         message,
-        () => blocker.proceed(), // allow navigation
-        () => blocker.reset()    // cancel navigation
+        () => blocker.proceed(),
+        () => blocker.reset()
       );
     }
-  }, [blocker, message, prompt, when]);
+  }, [blocker, showPrompt, message]);
 };
