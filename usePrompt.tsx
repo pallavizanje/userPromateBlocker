@@ -1,20 +1,18 @@
-// hooks/usePrompt.ts
-import {
-  unstable_useBlocker as useBlocker,
-} from "react-router-dom";
 import { useEffect } from "react";
+import { unstable_useBlocker as useBlocker } from "react-router-dom";
+import { usePromptContext } from "./PromptProvider";
 
 export const usePrompt = (message: string, when: boolean) => {
   const blocker = useBlocker(when);
+  const prompt = usePromptContext();
 
   useEffect(() => {
     if (blocker.state === "blocked") {
-      const confirm = window.confirm(message);
-      if (confirm) {
-        blocker.proceed(); // ✅ allow navigation
-      } else {
-        blocker.reset(); // ❌ cancel navigation
-      }
+      prompt.show(
+        message,
+        () => blocker.proceed(), // allow navigation
+        () => blocker.reset()    // cancel navigation
+      );
     }
-  }, [blocker, message, when]);
+  }, [blocker, message, prompt, when]);
 };
