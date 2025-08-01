@@ -1,12 +1,11 @@
 import { useEffect } from "react";
 
-export const useBeforeUnload = (when: boolean, message = "Are you sure you want to leave?") => {
+export const useBeforeUnload = (when: boolean, message = "You have unsaved changes.") => {
   useEffect(() => {
     const handler = (e: BeforeUnloadEvent) => {
-      if (when) {
-        e.preventDefault();
-        e.returnValue = message; // Required for modern browsers
-      }
+      if (!when) return;
+      e.preventDefault();
+      e.returnValue = message;
     };
 
     if (when) {
