@@ -8,11 +8,7 @@ export const usePrompt = (message: string, when: boolean) => {
 
   useEffect(() => {
     if (blocker.state === "blocked") {
-      showPrompt(
-        message,
-        () => blocker.proceed(),
-        () => blocker.reset()
-      );
+      showPrompt(message, blocker.proceed, blocker.reset);
     }
   }, [blocker, showPrompt, message]);
 };
