@@ -1,0 +1,11 @@
+src/
+├── App.tsx
+├── components/
+│   └── FormNavigationGuard.tsx  ✅ ← Handles prompt logic
+├── hooks/
+│   ├── PromptContext.tsx        ✅ ← Custom modal + context
+│   ├── usePrompt.ts             ✅ ← Route change blocker
+│   └── useBeforeUnload.ts       ✅ ← Tab close/refresh blocker
+├── pages/
+│   ├── ExampleFormikForm.tsx    ✅ ← Page with Formik form
+│   └── About.tsx                ✅ ← Static page (no form)
